@@ -1,11 +1,13 @@
 import os
 import argparse
 
+
 def create_parser():
     parser = argparse.ArgumentParser(description='Parameters')
     parser.add_argument('path', help='Path to folder')
     args = parser.parse_args()
     return args
+
 
 def get_file_sizes(path):
     file_sizes_list = []
@@ -16,6 +18,7 @@ def get_file_sizes(path):
             file_sizes_list.append((file_name, file_size))
     return file_sizes_list
 
+
 def main():
 
     try:
@@ -23,11 +26,14 @@ def main():
         if not os.path.exists(path):
             print('Folder does not exist')
             return None
+        if not os.path.isdir(path):
+            print('Not a directory')
+            return None
         file_sizes_list = get_file_sizes(path)
-        duplicates_set = set([x for x in file_sizes_list if file_sizes_list.count(x)>1])
+        duplicates_set = set([x for x in file_sizes_list if file_sizes_list.count(x) > 1])
         print('Duplicate files:')
-        for duplicate in duplicates_set:
-            print(duplicate[0], 'of size', duplicate[1], 'bytes')
+        for filename, filesize in duplicates_set:
+            print(filename, 'of size', filesize, 'bytes')
     except OSError:
         print("Can't read files")
 
