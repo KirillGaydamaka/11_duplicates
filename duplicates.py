@@ -20,8 +20,8 @@ def get_file_sizes(path):
     return files_dict
 
 
-def print_duplicates(name, size, dirs):
-    print('--\n{} of size {} bytes in folders:'.format(name, size))
+def print_duplicates(file_name, file_size, dirs):
+    print('--\n{} of size {} bytes in folders:'.format(file_name, file_size))
     print('\n'.join(dirs))
 
 
@@ -38,13 +38,13 @@ def main():
         print("Can't read files")
         return None
 
-    duplicates = {key: value for (key, value) in
-                  files_dict.items() if len(value) > 1}
+    duplicates = {name_size: dirs for (name_size, dirs) in
+                  files_dict.items() if len(dirs) > 1}
 
     print('Found duplicate files:')
-    for name, size in duplicates:
-        dirs = duplicates[(name, size)]
-        print_duplicates(name, size, dirs)
+    for file_name, file_size in duplicates:
+        dirs = duplicates[(file_name, file_size)]
+        print_duplicates(file_name, file_size, dirs)
 
 
 if __name__ == '__main__':
