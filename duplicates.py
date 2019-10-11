@@ -1,5 +1,6 @@
 import os
 import argparse
+from collections import defaultdict
 
 
 def create_parser():
@@ -10,17 +11,16 @@ def create_parser():
 
 
 def get_file_sizes(path):
-    file_sizes_list = []
+    files_dict = defaultdict(list)
     for root, dirs, files in os.walk(path):
         for file_name in files:
             file_path = os.path.join(root, file_name)
             file_size = os.path.getsize(file_path)
-            file_sizes_list.append((file_name, file_size))
-    return file_sizes_list
+            files_dict[(file_name, file_size)].append(root)
+    return files_dict
 
 
 def main():
-
     try:
         path = create_parser().path
         if not os.path.exists(path):
@@ -29,11 +29,13 @@ def main():
         if not os.path.isdir(path):
             print('Not a directory')
             return None
-        file_sizes_list = get_file_sizes(path)
-        duplicates_set = set([x for x in file_sizes_list if file_sizes_list.count(x) > 1])
-        print('Duplicate files:')
-        for filename, filesize in duplicates_set:
-            print(filename, 'of size', filesize, 'bytes')
+        files_dict = get_file_sizes(path)
+        print('Found duplicate files:')
+        for filename, filesize in files_dict:
+            if len(files_dict[(filename, filesize)]) > 1:
+                print('--\n{} of size {} bytes in folders:'.format(filename,
+                                                                   filesize))
+                print('\n'.join(files_dict[(filename, filesize)]))
     except OSError:
         print("Can't read files")
 
