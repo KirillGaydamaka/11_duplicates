@@ -28,16 +28,17 @@ def main():
             return None
         if not os.path.isdir(path):
             print('Not a directory')
-            return None
         files_dict = get_file_sizes(path)
-        print('Found duplicate files:')
-        for filename, filesize in files_dict:
-            if len(files_dict[(filename, filesize)]) > 1:
-                print('--\n{} of size {} bytes in folders:'.format(filename,
-                                                                   filesize))
-                print('\n'.join(files_dict[(filename, filesize)]))
     except OSError:
         print("Can't read files")
+        return None
+
+    print('Found duplicate files:')
+    for filename, filesize in files_dict:
+        if len(files_dict[(filename, filesize)]) > 1:
+            print('--\n{} of size {} bytes in folders:'.format(filename,
+                                                               filesize))
+            print('\n'.join(files_dict[(filename, filesize)]))
 
 
 if __name__ == '__main__':
