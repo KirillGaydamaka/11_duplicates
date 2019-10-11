@@ -20,6 +20,11 @@ def get_file_sizes(path):
     return files_dict
 
 
+def print_duplicates(name, size, dirs):
+    print('--\n{} of size {} bytes in folders:'.format(name, size))
+    print('\n'.join(dirs))
+
+
 def main():
     try:
         path = create_parser().path
@@ -33,12 +38,13 @@ def main():
         print("Can't read files")
         return None
 
+    duplicates = {key: value for (key, value) in
+                  files_dict.items() if len(value) > 1}
+
     print('Found duplicate files:')
-    for filename, filesize in files_dict:
-        if len(files_dict[(filename, filesize)]) > 1:
-            print('--\n{} of size {} bytes in folders:'.format(filename,
-                                                               filesize))
-            print('\n'.join(files_dict[(filename, filesize)]))
+    for name, size in duplicates:
+        dirs = duplicates[(name, size)]
+        print_duplicates(name, size, dirs)
 
 
 if __name__ == '__main__':
